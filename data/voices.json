@@ -1,0 +1,144 @@
+{
+  "selected_utc": "2026-09-26T23:51:00+00:00",
+  "rule": "VA = first premade voice with a male or female label; VB = next premade voice with the other label.",
+  "VA": {
+    "order": 0,
+    "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+    "name": "Roger - Laid-Back, Casual, Resonant",
+    "gender": "male"
+  },
+  "VB": {
+    "order": 1,
+    "voice_id": "EXAVITQu4vr4xnSDxMaL",
+    "name": "Sarah - Mature, Reassuring, Confident",
+    "gender": "female"
+  },
+  "premade_voices_in_order": [
+    {
+      "order": 0,
+      "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+      "name": "Roger - Laid-Back, Casual, Resonant",
+      "gender": "male"
+    },
+    {
+      "order": 1,
+      "voice_id": "EXAVITQu4vr4xnSDxMaL",
+      "name": "Sarah - Mature, Reassuring, Confident",
+      "gender": "female"
+    },
+    {
+      "order": 2,
+      "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+      "name": "Laura - Enthusiast, Quirky Attitude",
+      "gender": "female"
+    },
+    {
+      "order": 3,
+      "voice_id": "IKne3meq5aSn9XLyUdCD",
+      "name": "Charlie - Deep, Confident, Energetic",
+      "gender": "male"
+    },
+    {
+      "order": 4,
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "name": "George - Warm, Captivating Storyteller",
+      "gender": "male"
+    },
+    {
+      "order": 5,
+      "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+      "name": "Callum - Husky Trickster",
+      "gender": "male"
+    },
+    {
+      "order": 6,
+      "voice_id": "SAz9YHcvj6GT2YYXdXww",
+      "name": "River - Relaxed, Neutral, Informative",
+      "gender": "neutral"
+    },
+    {
+      "order": 7,
+      "voice_id": "SOYHLrjzK2X1ezoPC6cr",
+      "name": "Harry - Fierce Warrior",
+      "gender": "male"
+    },
+    {
+      "order": 8,
+      "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+      "name": "Liam - Energetic, Social Media Creator",
+      "gender": "male"
+    },
+    {
+      "order": 9,
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "name": "Alice - Clear, Engaging Educator",
+      "gender": "female"
+    },
+    {
+      "order": 10,
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "name": "Matilda - Knowledgable, Professional",
+      "gender": "female"
+    },
+    {
+      "order": 11,
+      "voice_id": "bIHbv24MWmeRgasZH58o",
+      "name": "Will - Relaxed Optimist",
+      "gender": "male"
+    },
+    {
+      "order": 12,
+      "voice_id": "cgSgspJ2msm6clMCkdW9",
+      "name": "Jessica - Playful, Bright, Warm",
+      "gender": "female"
+    },
+    {
+      "order": 13,
+      "voice_id": "cjVigY5qzO86Huf0OWal",
+      "name": "Eric - Smooth, Trustworthy",
+      "gender": "male"
+    },
+    {
+      "order": 14,
+      "voice_id": "hpp4J3VqNfWAUOO0d1Us",
+      "name": "Bella - Professional, Bright, Warm",
+      "gender": "female"
+    },
+    {
+      "order": 15,
+      "voice_id": "iP95p4xoKVk53GoZ742B",
+      "name": "Chris - Charming, Down-to-Earth",
+      "gender": "male"
+    },
+    {
+      "order": 16,
+      "voice_id": "nPczCjzI2devNBz1zQrb",
+      "name": "Brian - Deep, Resonant and Comforting",
+      "gender": "male"
+    },
+    {
+      "order": 17,
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "name": "Daniel - Steady Broadcaster",
+      "gender": "male"
+    },
+    {
+      "order": 18,
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "name": "Lily - Velvety Actress",
+      "gender": "female"
+    },
+    {
+      "order": 19,
+      "voice_id": "pNInz6obpgDQGcFmaJgB",
+      "name": "Adam - Dominant, Firm",
+      "gender": "male"
+    },
+    {
+      "order": 20,
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "name": "Bill - Wise, Mature, Balanced",
+      "gender": "male"
+    }
+  ]
+}
