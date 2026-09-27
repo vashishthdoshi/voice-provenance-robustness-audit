@@ -50,9 +50,9 @@ The classifier gave identical scores on all 12 retested files, so the results be
 
 **Human controls.** None of the 24 control queries was flagged. Every control scored 2%, the lowest value the tool displays. This held for the non-native Spanish recordings.
 
-!\[Recall by condition and model](results/recall_by_condition.png)
+![Recall by condition and model](results/recall_by_condition.png)
 
-!\[Raw scores by condition](results/scores_by_condition.png)
+![Raw scores by condition](results/scores_by_condition.png)
 
 **Hypotheses**
 
