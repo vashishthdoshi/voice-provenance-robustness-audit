@@ -9,9 +9,10 @@ Dated record of every action taken in this study, in chronological order. Entrie
 |2026-09-26|Former documentation page checked|No current page publishes a precision or recall figure|1ff8491|
 |2026-09-26|Archived documentation accessed|Snapshot dated 2026-09-26 reports 99% precision and 80% recall on unmodified audio. Source: https://web.archive.org/web/20250909200109/https://elevenlabs.io/docs/product-guides/audio-tools/ai-speech-classifier<br />Screenshot: evidence/screenshots/archived\_docs\_faq.png|1ff8491|
 |2026-09-26|Protocol registered|PREREGISTRATION.md committed before any data generation|1ff8491|
-|2026-09-26|Seeds fixed|Noise 20260926, query order 20260927, retest 20260928|(this commit)|
-|2026-09-26|Implementation specified|Voice rule applied as: VA = first premade voice with a male or female label, VB = next premade voice with the other label. C2 resamples before band-pass. C3 SNR uses whole-clip mean power; output 44.1 kHz mono WAV. Retest sample drawn before querying with the fixed seed|(this commit)|
-|2026-09-26|Voices selected|Rule applied to 21 premade voices. VA: Roger (male), CwhRBWXzGAHq8TQ4Fs17. VB: Sarah (female), EXAVITQu4vr4xnSDxMaL. Full ordered list in data/voices.json|(this commit)|
+|2026-09-26|Seeds fixed|Noise 20260926, query order 20260927, retest 20260928|e2f9245|
+|2026-09-26|Implementation specified|Voice rule applied as: VA = first premade voice with a male or female label, VB = next premade voice with the other label. C2 resamples before band-pass. C3 SNR uses whole-clip mean power; output 44.1 kHz mono WAV. Retest sample drawn before querying with the fixed seed|e2f9245|
+|2026-09-26|Voices selected|Rule applied to 21 premade voices. VA: Roger (male), CwhRBWXzGAHq8TQ4Fs17. VB: Sarah (female), EXAVITQu4vr4xnSDxMaL. Full ordered list in data/voices.json|e2f9245|
+|2026-09-26|Regenerated "AI\_fl\_HI\_VA\_S2.mp3" and "AI\_v3\_HI\_VB\_S3.mp3". Wrong language corrected for the latter.|"order (English = 'order')" and "oar se (English = 'from')" is mis-pronounced as "oren-der" and "orus-ae" respectively \|  First attempts kept as AI\_fl\_HI\_VA\_S2.attempt1.mp3 and AI\_v3\_HI\_VB\_S3.attempt1.mp3 respectively|(this commit)|
 
 
 
