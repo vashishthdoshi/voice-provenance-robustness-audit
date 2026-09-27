@@ -15,8 +15,10 @@ Dated record of every action taken in this study, in chronological order. Entrie
 |2026-09-26|Regenerated "AI\_fl\_HI\_VA\_S2.mp3" and "AI\_v3\_HI\_VB\_S3.mp3". Wrong language corrected for the latter with the second generation.|"order (English = 'order')" and "oar se (English = 'from')" is mis-pronounced as "oren-der" and "orus-ae" respectively \|  First attempts kept as AI\_fl\_HI\_VA\_S2.attempt1.mp3 and AI\_v3\_HI\_VB\_S3.attempt1.mp3 respectively|930d64f|
 |2026-09-26|All controls generated|Best take of 3 used. No copies kept of failed takes for easier management|100644|
 |2026-09-26|Degradation run|96 condition files produced from 24 sources. Seven C3 files scaled down to prevent clipping, SNR unchanged: AI\_fl\_EN\_VB\_S2 (0.9650), AI\_fl\_HI\_VB\_S3 (0.9248), AI\_v3\_EN\_VB\_S2 (0.9084), AI\_v3\_HI\_VB\_S3 (0.9183), AI\_v3\_ES\_VB\_S1 (0.9140), HUM\_ES\_S1 (0.8339). Manifest: 20 raw including 2 kept attempts, 6 controls, 96 degraded|ef69fb5|
-|2026-09-26|Pre-order test queries|"AI\_fl\_EN\_VA\_S1\_C0.mp3," "HUM\_ES\_S3.m4a," and "AI\_fl\_ES\_VB\_S1.mp3" uploaded before querying began to check the result format: \[98%, 2%, 98%]. Not used in primary analysis; files re-queried in committed order|(this commit)|
-|2026-09-26|Labelling helper added|scripts/06\_label.py records scores, timestamps and the 50% decision rule during manual querying|(this commit)|
+|2026-09-26|Pre-order test queries|"AI\_fl\_EN\_VA\_S1\_C0.mp3," "HUM\_ES\_S3.m4a," and "AI\_fl\_ES\_VB\_S1.mp3" uploaded before querying began to check the result format: \[98%, 2%, 98%]. Not used in primary analysis; files re-queried in committed order|86d34d6|
+|2026-09-26|Labelling helper added|scripts/06\_label.py records scores, timestamps and the 50% decision rule during manual querying|86d34d6|
+|2026-09-26|Deviation: query timestamps|Per-query timestamps not recorded during querying. All 96 queries ran between 2026-09-27 03:30 and 04:45 UTC (26 Sep 23:30 to 27 Sep 00:45 EDT, UTC-4).|(this commit)|
+|2026-09-26|Deviation: evidence coverage|Screen recording for 64-78 (original 355 MB, SHA-256 bd71a439ea596c91b57628f30619313cc1f8b0c29ad83a9e9e8270c32a77a517, retained locally and 1-34 (original 862 MB, SHA-256 5f0f46fb76660695079b95268c2af9be3b7a1123). Remaining recordings lost to a storage issue. Coverage still includes every condition, class and model, meeting Section 5.1|(this commit)|
 
 
 
