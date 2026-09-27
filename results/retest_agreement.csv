@@ -1,0 +1,2 @@
+files,label_agreement,agreement_rate,ci_low,ci_high,identical_scores,mean_abs_score_diff,max_abs_score_diff
+12,12,1.0,0.757,1.0,12,0.0,0.0

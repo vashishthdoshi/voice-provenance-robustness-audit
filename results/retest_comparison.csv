@@ -1,0 +1,13 @@
+file,score,score2,score_diff,det,det2
+AI_fl_EN_VB_S2_C0.mp3,98.0,98.0,0.0,1,1
+AI_fl_ES_VB_S1_C0.mp3,98.0,98.0,0.0,1,1
+AI_v2_EN_VA_S1_C1.mp3,98.0,98.0,0.0,1,1
+AI_v2_EN_VA_S1_C3.wav,98.0,98.0,0.0,1,1
+AI_v2_ES_VA_S3_C3.wav,98.0,98.0,0.0,1,1
+AI_v2_HI_VB_S3_C1.mp3,98.0,98.0,0.0,1,1
+AI_v3_ES_VA_S3_C0.mp3,98.0,98.0,0.0,1,1
+AI_v3_HI_VB_S3_C2.wav,63.0,63.0,0.0,1,1
+HUM_EN_S2_C3.wav,2.0,2.0,0.0,0,0
+HUM_ES_S3_C3.wav,2.0,2.0,0.0,0,0
+HUM_HI_S2_C0.m4a,2.0,2.0,0.0,0,0
+HUM_HI_S2_C2.wav,2.0,2.0,0.0,0,0
