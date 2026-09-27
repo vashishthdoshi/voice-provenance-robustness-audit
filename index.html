@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice Provenance Robustness Audit</title>
+<meta name="description" content="A preregistered pilot study of how the ElevenLabs AI Speech Classifier performs on compressed, telephone-channel and noisy audio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --canvas: #fdfcfc;
+  --surface: #f5f3f1;
+  --ink: #000000;
+  --ink-2: #4e4e4e;
+  --muted: #777169;
+  --rule: #e8e5e1;
+  --orange: #ff4704;
+  --violet: #0447ff;
+  --c-v2: #000000;
+  --c-fl: #9a948c;
+  --c-v3: #ff4704;
+  --c-hum: #0447ff;
+  --radius: 20px;
+  --text: 680px;
+  --wide: 960px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  font-feature-settings: "tnum" 1, "cv11" 1;
+}
+h1, h2, h3, p, ul, ol, table, figure { margin: 0; }
+h1, h2 {
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+h3 {
+  font-size: 24px;
+  line-height: 1.3;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+a { color: var(--ink); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 4px; }
+small, figcaption, th, td, button, input, label, select { font-size: 16px; font-family: inherit; }
+
+.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 24px; }
+.col { max-width: var(--text); }
+
+header.top {
+  padding: 96px 0 56px;
+  border-bottom: 1px solid var(--rule);
+}
+.mark { display: flex; gap: 5px; margin-bottom: 40px; }
+.mark span { width: 5px; height: 26px; background: var(--ink); border-radius: 1px; }
+header.top h1 { max-width: 760px; margin-bottom: 24px; }
+.byline { color: var(--ink-2); }
+.byline p + p { margin-top: 4px; }
+.links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.pill {
+  display: inline-flex; align-items: center;
+  padding: 8px 18px;
+  border: 1px solid var(--ink);
+  border-radius: 9999px;
+  text-decoration: none;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  line-height: 1.4;
+}
+.pill.solid { background: var(--ink); color: #fff; }
+.pill:hover { text-decoration: none; background: var(--surface); }
+.pill.solid:hover { background: #333; }
+
+section { padding: 64px 0; border-bottom: 1px solid var(--rule); }
+section h2 { margin-bottom: 24px; }
+section h3 { margin: 40px 0 16px; }
+p + p { margin-top: 16px; }
+.col ul, .col ol { padding-left: 20px; margin-top: 16px; }
+.col li + li { margin-top: 8px; }
+.muted { color: var(--muted); }
+
+.abstract {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: var(--text);
+}
+.abstract h3 { margin: 0 0 12px; }
+
+.contents ol { padding-left: 20px; margin-top: 12px; columns: 2; column-gap: 40px; }
+.contents li { break-inside: avoid; }
+
+.tablewrap { overflow-x: auto; margin-top: 24px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 10px 14px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 500; }
+td.num, th.num { text-align: right; padding-right: 0; padding-left: 14px; }
+tbody tr:last-child td { border-bottom: 0; }
+
+figure.fig {
+  margin-top: 32px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 28px;
+  background: #fff;
+}
+figcaption { color: var(--ink-2); margin-top: 20px; max-width: var(--text); }
+figcaption b { color: var(--ink); font-weight: 500; }
+
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-bottom: 20px; }
+.thresh { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; flex: 1 1 280px; min-width: 0; }
+.thresh label { font-weight: 500; white-space: nowrap; }
+.thresh output { min-width: 3.2em; font-weight: 500; }
+input[type=range] { flex: 1 1 160px; min-width: 0; accent-color: var(--ink); height: 28px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.sw.hum { background: #fff; border: 2px solid var(--c-hum); }
+
+.chart { width: 100%; position: relative; }
+.chart svg { display: block; overflow: visible; }
+.chart text { font-size: 16px; fill: var(--ink-2); font-family: inherit; }
+.tip {
+  position: absolute; pointer-events: none;
+  background: var(--ink); color: #fff;
+  padding: 6px 12px; border-radius: 10px;
+  white-space: nowrap; opacity: 0; transition: opacity .12s;
+}
+
+.readout { margin-top: 8px; }
+.readout th, .readout td { white-space: nowrap; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.filters .pill[aria-pressed=true] { background: var(--ink); color: #fff; }
+.grid { width: 100%; border-collapse: separate; border-spacing: 4px; margin-top: 8px; }
+.grid th, .grid td { border: 0; padding: 8px 10px; }
+.grid th { font-weight: 500; }
+.grid th.c { text-align: center; }
+.grid tr.group th { padding-top: 18px; text-align: left; }
+.grid td.clip { white-space: nowrap; }
+.grid td.s { text-align: center; border-radius: 8px; width: 17%; }
+.grid td.s.miss { box-shadow: inset 0 0 0 2px var(--orange); }
+.grid tr.hidden { display: none; }
+
+.hyp td:first-child { font-weight: 500; white-space: nowrap; }
+.verdict { white-space: nowrap; }
+
+footer { padding: 48px 0 80px; color: var(--ink-2); }
+footer p + p { margin-top: 8px; }
+
+@media (max-width: 640px) {
+  header.top { padding-top: 56px; }
+  section { padding: 48px 0; }
+  figure.fig { padding: 18px; }
+  .abstract { padding: 22px; }
+  .contents ol { columns: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .tip { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="mark" aria-hidden="true"><span></span><span></span></div>
+    <h1>How robust is voice provenance detection under real-world audio conditions?</h1>
+    <div class="byline">
+      <p>Vashishth Doshi, Carnegie Mellon University</p>
+      <p>Preregistered pilot study. Data collected 26 and 27 September 2026.</p>
+    </div>
+    <div class="links">
+      <a class="pill solid" href="https://github.com/vashishthdoshi/voice-provenance-robustness-audit">View the repository</a>
+      <a class="pill" href="https://github.com/vashishthdoshi/voice-provenance-robustness-audit/blob/main/protocol/PREREGISTRATION.md">Read the preregistration</a>
+      <a class="pill" href="https://github.com/vashishthdoshi/voice-provenance-robustness-audit/blob/main/results/labels.csv">Download the scores</a>
+    </div>
+  </div>
+</header>
+
+<section aria-labelledby="abs">
+  <div class="wrap">
+    <div class="abstract">
+      <h3 id="abs">Abstract</h3>
+      <p>Public tools for detecting AI-generated speech are usually evaluated on clean audio, while recordings that reach listeners have often been compressed, sent over a phone line or captured with background noise. This study tested the ElevenLabs AI Speech Classifier on 18 clips from three ElevenLabs models and 6 human recordings, each under four audio conditions, for 96 queries. Audio from Multilingual v2 and Flash v2.5 was detected in all 48 queries. Eleven v3 audio was detected in 5 of 6 clean clips and in none of the 6 clips with added noise. No human recording was flagged. A retest of 12 files returned identical scores. The results are indicative given the sample size.</p>
+    </div>
+    <nav class="contents col" aria-label="Contents" style="margin-top:40px">
+      <h3 style="margin:0">Contents</h3>
+      <ol>
+        <li><a href="#background">Background</a></li>
+        <li><a href="#design">Design</a></li>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#hypotheses">Hypotheses</a></li>
+        <li><a href="#discussion">Takeaways</a></li>
+        <li><a href="#limitations">Limitations</a></li>
+        <li><a href="#method-notes">Deviations and data policy</a></li>
+        <li><a href="#data">Data and reproduction</a></li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section id="background" aria-labelledby="h-bg">
+  <div class="wrap"><div class="col">
+    <h2 id="h-bg">1. Background</h2>
+    <p>This study asks how robust a production AI-voice provenance classifier is when AI-generated audio is modified in ways that commonly occur in real-world distribution related safety-failure-modes that can be exploited by bad actors, such as compression, telephone transmission and background noise.</p>
+    <p>The ElevenLabs AI Speech Classifier is a free public tool. It estimates the probability that an audio sample was generated with ElevenLabs technology, and it needs no account. That makes it the tool most likely to be used by someone checking a suspicious voicemail or call recording.</p>
+    <p>An earlier version of the ElevenLabs documentation reported 99% precision and 80% recall on unmodified ElevenLabs audio. That page is no longer live, and the figure is cited from an archived copy. The current public page states that audio from the Eleven v3 model is not reliably classified. ElevenLabs now describes the classifier as a legacy tool and recommends its Audio Detector for signed-in users. The Audio Detector checks for a watermark first and falls back to the classifier. It is out of scope here.</p>
+    <p>Recorded audio rarely reaches a listener unmodified. Calls pass through telephone codecs, clips are recompressed when shared, and recordings pick up background noise. This study measures how the classifier performs under those conditions.</p>
+  </div></div>
+</section>
+
+<section id="design" aria-labelledby="h-design">
+  <div class="wrap">
+    <div class="col">
+      <h2 id="h-design">2. Design</h2>
+      <p>The design was registered before any audio was generated or any query was made. The Git commit of the preregistration is the record of registration.</p>
+
+      <h3>2.1 Stimuli</h3>
+      <p>Three ElevenLabs models generated three benign scripts in English, Hindi and Spanish using two premade library voices. The scripts are a library notice, a customer service greeting and a bank login confirmation. Each voice read one script per language, and every model read the same assignment. Any difference between models is therefore measured on identical text, voice and language. This produced 18 AI clips.</p>
+      <p>The author recorded the same six language and script combinations as human controls. The author speaks English professionally, Hindi fluently and Spanish conversationally. The Spanish controls therefore test non-native speech, which is a known source of false positives in synthetic-speech detection.</p>
+
+      <h3>2.2 Audio conditions</h3>
+      <p>A deterministic script produced four versions of every clip.</p>
+    </div>
+    <div class="tablewrap col">
+      <table>
+        <thead><tr><th scope="col">Condition</th><th scope="col">Processing</th><th scope="col">Real-world analogue</th></tr></thead>
+        <tbody>
+          <tr><td>Clean</td><td>Original file</td><td>A file received directly</td></tr>
+          <tr><td>MP3 64 kbps</td><td>Re-encoded at 64 kbps</td><td>A clip reshared through messaging apps</td></tr>
+          <tr><td>Telephone</td><td>8 kHz mono, 300 to 3400 Hz band-pass, G.711 μ-law</td><td>Audio heard over a phone call</td></tr>
+          <tr><td>Noise 10 dB</td><td>Pink noise at 10 dB signal-to-noise ratio, fixed seed</td><td>A recording made in a busy room</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+      <h3>2.3 Procedure and analysis</h3>
+      <p>All 96 files were uploaded to the public web interface in a single session on 26 and 27 September 2026, in an order randomised with a fixed seed and committed beforehand. A file counted as detected if the classifier's score was 50% or higher. Twelve files chosen by seed were queried a second time to check reliability.</p>
+      <p>Recall and false-positive rates are reported with 95% Wilson intervals. Paired comparisons use exact McNemar tests, with Holm correction across the preregistered telephone tests.</p>
+    </div>
+  </div>
+</section>
+
+<section id="results" aria-labelledby="h-res">
+  <div class="wrap">
+    <div class="col">
+      <h2 id="h-res">3. Results</h2>
+      <p>The classifier gave identical scores on all 12 retested files, so the results below reflect stable outputs. Scores appear as whole percentages between 2% and 98%, which are the limits the tool displays.</p>
+
+      <h3>3.1 Every score, by condition</h3>
+      <p>Figure 1 shows all 96 scores. Move the threshold to see how recall and the false-positive rate would change under a different decision rule. The preregistered rule is 50%.</p>
+    </div>
+
+    <figure class="fig" aria-labelledby="cap1">
+      <div class="controls">
+        <div class="thresh">
+          <label for="t">Decision threshold</label>
+          <input id="t" type="range" min="2" max="98" step="1" value="50" aria-describedby="cap1">
+          <output id="tv" for="t">50%</output>
+          <button class="pill" id="reset" type="button">Reset to 50%</button>
+        </div>
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><i class="sw" style="background:var(--c-v2)"></i>Multilingual v2</span>
+        <span><i class="sw" style="background:var(--c-fl)"></i>Flash v2.5</span>
+        <span><i class="sw" style="background:var(--c-v3)"></i>Eleven v3</span>
+        <span><i class="sw hum"></i>Human control</span>
+      </div>
+      <div class="chart" id="strip" role="img" aria-label="Strip plot of all 96 classifier scores by audio condition and source."></div>
+      <div class="tablewrap"><table class="readout" id="readout" aria-live="polite"></table></div>
+      <figcaption id="cap1"><b>Figure 1.</b> Classifier score for each query, grouped by audio condition and source. Each point is one file. The horizontal line is the decision threshold. Hover or tap a point to see its file.</figcaption>
+    </figure>
+
+    <div class="col">
+      <h3>3.2 The same clip across conditions</h3>
+      <p>Figure 2 follows each AI clip through the four conditions. Cells with an orange outline fall below the threshold set in Figure 1.</p>
+    </div>
+
+    <figure class="fig" aria-labelledby="cap2">
+      <div class="filters" role="group" aria-label="Filter by model">
+        <button class="pill" type="button" data-m="all" aria-pressed="true">All models</button>
+        <button class="pill" type="button" data-m="v2" aria-pressed="false">Multilingual v2</button>
+        <button class="pill" type="button" data-m="fl" aria-pressed="false">Flash v2.5</button>
+        <button class="pill" type="button" data-m="v3" aria-pressed="false">Eleven v3</button>
+      </div>
+      <div class="tablewrap">
+        <table class="grid" id="grid">
+          <thead><tr><th scope="col">Clip</th><th scope="col" class="c">Clean</th><th scope="col" class="c">MP3</th><th scope="col" class="c">Telephone</th><th scope="col" class="c">Noise</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <figcaption id="cap2"><b>Figure 2.</b> Score for each AI clip in each condition. Clips are labelled by language, voice (A or B) and script (S1 library, S2 customer service, S3 bank). Darker cells are higher scores.</figcaption>
+    </figure>
+
+    <div class="col">
+      <h3>3.3 Summary at the preregistered threshold</h3>
+    </div>
+    <div class="tablewrap col">
+      <table>
+        <caption class="muted" style="text-align:left;caption-side:bottom;padding-top:12px">Clips detected out of 6 at a threshold of 50%, with the mean Eleven v3 score.</caption>
+        <thead><tr><th scope="col">Source</th><th scope="col" class="num">Clean</th><th scope="col" class="num">MP3</th><th scope="col" class="num">Telephone</th><th scope="col" class="num">Noise</th></tr></thead>
+        <tbody>
+          <tr><td>Multilingual v2</td><td class="num">6</td><td class="num">6</td><td class="num">6</td><td class="num">6</td></tr>
+          <tr><td>Flash v2.5</td><td class="num">6</td><td class="num">6</td><td class="num">6</td><td class="num">6</td></tr>
+          <tr><td>Eleven v3</td><td class="num">5</td><td class="num">5</td><td class="num">4</td><td class="num">0</td></tr>
+          <tr><td>Eleven v3 mean score</td><td class="num">79%</td><td class="num">75%</td><td class="num">53%</td><td class="num">18%</td></tr>
+          <tr><td>Human controls flagged</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="hypotheses" aria-labelledby="h-hyp">
+  <div class="wrap">
+    <div class="col"><h2 id="h-hyp">4. Hypotheses</h2></div>
+    <div class="tablewrap col">
+      <table class="hyp">
+        <thead><tr><th scope="col"></th><th scope="col">Registered hypothesis</th><th scope="col">Result</th></tr></thead>
+        <tbody>
+          <tr><td>H1</td><td>Clean recall for Multilingual v2 and Flash v2.5 is consistent with the published 80%.</td><td><span class="verdict">Supported.</span> 12 of 12 detected, 95% CI 0.76 to 1.00, which includes 0.80.</td></tr>
+          <tr><td>H2</td><td>Telephone audio lowers recall compared with clean and compressed audio.</td><td><span class="verdict">Not supported.</span> Recall for v2 and Flash was unchanged. Eleven v3 scores fell from a mean of 79% to 53%, and three clips changed label in both directions. Holm-adjusted p = 1.0.</td></tr>
+          <tr><td>H3</td><td>Clean Eleven v3 audio is detected less often than Multilingual v2 and Flash v2.5.</td><td><span class="verdict">Consistent in direction.</span> 5 of 6 against 12 of 12, with one discordant pair. p = 1.0.</td></tr>
+          <tr><td>H4</td><td>No more than 1 of 24 human control queries is flagged.</td><td><span class="verdict">Supported.</span> 0 of 24, 95% CI 0 to 0.14.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+      <h3>4.1 Exploratory results</h3>
+      <p>Added noise produced the largest change. All five Eleven v3 clips detected in their clean form fell below the threshold with noise added, and no clip moved in the reverse direction of analyses (exact p = 0.06, uncorrected). For v2 and Flash, noise lowered some scores from 98% to between 82% and 93%, even as every clip stayed above the threshold.</p>
+      <p>Eleven v3 clips in English held higher scores than Hindi and Spanish under clean, compressed and telephone conditions. The sample is too small to separate language from script or voice.</p>
+    </div>
+  </div>
+</section>
+
+<section id="discussion" aria-labelledby="h-disc">
+  <div class="wrap"><div class="col">
+    <h2 id="h-disc">5. Takeaways</h2>
+    <p>For Multilingual v2 and Flash v2.5 audio, the classifier held up under every condition tested. Clean-audio recall in this sample was 12 of 12, consistent with the previously published figure.</p>
+    <p>Eleven v3 is where detection is fragile. ElevenLabs already flags this model as a limitation, and this study measures how that limitation grows under ordinary conditions. Telephone transmission pulled v3 scores toward the threshold. Pink noise at 10 dB signal-to-noise ratio worsened v3 scores to less than the threshold (50%).</p>
+    <p>This matters for how results are read. A user who uploads a noisy v3 clip sees a low score, with a label between "Uncertain" and "Very unlikely." The v3 warning is visible with the result on the upload page of the classifier itself. Showing the model limitation alongside low-scoring results, and publishing recall by model and by audio condition, would help users read any low score better.</p>
+    <p>The false-positive result is reassuring for this sample. No human recording was flagged, including non-native speech. This doesn't come as a surprise, given the lack of polish that generally comes with AI generated audio.</p>
+  </div></div>
+</section>
+
+<section id="limitations" aria-labelledby="h-lim">
+  <div class="wrap"><div class="col">
+    <h2 id="h-lim">6. Limitations</h2>
+    <ul>
+      <li>Each model and condition cell contains six clips, so intervals are wide. The results are indicative.</li>
+      <li>The tool displays scores between 2% and 98%. Forty-seven of the 72 AI queries scored 98%, so small effects on v2 and Flash audio would not be visible.</li>
+      <li>Each condition was tested at one setting. Other bitrates, noise levels and codecs may behave differently.</li>
+      <li>The clips are short, with two voices and three scripts. All controls come from one speaker. The coverage of linguistic diversity will require significantly larger samples.</li>
+      <li>The classifier is a black box and may change. Results describe its behaviour on 26 and 27 September 2026.</li>
+      <li>The study covers the standalone classifier. It does not test the watermark-based Audio Detector.</li>
+    </ul>
+  </div></div>
+</section>
+
+<section id="method-notes" aria-labelledby="h-notes">
+  <div class="wrap"><div class="col">
+    <h2 id="h-notes">7. Deviations and data policy</h2>
+    <p>Deviations from the protocol are recorded with dates in the <a href="https://github.com/vashishthdoshi/voice-provenance-robustness-audit/blob/main/protocol/RUN_LOG.md">run log</a>.</p>
+    <p>Findings were shared with the ElevenLabs safety team as this repository was made public. Audio files are not published. The repository includes the full pipeline, a hash of every audio file, all classifier scores and the aggregate results. The analysis can be verified from these files without releasing audio that could be used to test ways of evading detection. Screen recordings of the query session are held by the author, with their hashes recorded in the run log.</p>
+  </div></div>
+</section>
+
+<section id="data" aria-labelledby="h-data">
+  <div class="wrap"><div class="col">
+    <h2 id="h-data">8. Data and reproduction</h2>
+    <p>The analysis can be rerun from the published scores with <code>python scripts/07_analyse.py</code>. Reproducing the full study needs Python 3.10 or later, ffmpeg and an ElevenLabs account, and the scripts run in the order given in the repository. Regenerated audio may differ from the published hashes because generation is not guaranteed to be deterministic.</p>
+  </div></div>
+</section>
+
+<footer>
+  <div class="wrap"><div class="col">
+    <p>Code is released under the MIT License. Results and documentation are released under CC BY 4.0.</p>
+    <p>Suggested citation: Doshi, V. (2026). Voice Provenance Robustness Audit: a preregistered pilot study of the ElevenLabs AI Speech Classifier.</p>
+  </div></div>
+</footer>
+
+<script>
+const DATA = [["AI_v2_HI_VB_S3_C3","AI","v2","HI","VB","S3","C3",98],["AI_v3_ES_VA_S3_C1","AI","v3","ES","VA","S3","C1",98],["HUM_ES_S1_C3","HUM","hum","ES","","S1","C3",2],["AI_v3_EN_VB_S2_C0","AI","v3","EN","VB","S2","C0",90],["HUM_HI_S3_C1","HUM","hum","HI","","S3","C1",2],["AI_fl_HI_VB_S3_C2","AI","fl","HI","VB","S3","C2",98],["AI_v2_EN_VA_S1_C0","AI","v2","EN","VA","S1","C0",98],["AI_v2_EN_VA_S1_C3","AI","v2","EN","VA","S1","C3",98],["AI_v2_HI_VA_S2_C3","AI","v2","HI","VA","S2","C3",89],["HUM_HI_S2_C0","HUM","hum","HI","","S2","C0",2],["HUM_HI_S3_C3","HUM","hum","HI","","S3","C3",2],["AI_v3_EN_VA_S1_C2","AI","v3","EN","VA","S1","C2",62],["AI_fl_ES_VB_S1_C0","AI","fl","ES","VB","S1","C0",98],["HUM_ES_S3_C0","HUM","hum","ES","","S3","C0",2],["AI_v3_EN_VB_S2_C1","AI","v3","EN","VB","S2","C1",86],["AI_v2_ES_VA_S3_C2","AI","v2","ES","VA","S3","C2",98],["AI_fl_HI_VB_S3_C1","AI","fl","HI","VB","S3","C1",98],["AI_v2_HI_VB_S3_C1","AI","v2","HI","VB","S3","C1",98],["AI_v3_EN_VA_S1_C1","AI","v3","EN","VA","S1","C1",98],["HUM_EN_S1_C1","HUM","hum","EN","","S1","C1",2],["HUM_HI_S2_C1","HUM","hum","HI","","S2","C1",2],["AI_v2_EN_VB_S2_C1","AI","v2","EN","VB","S2","C1",98],["AI_v3_HI_VA_S2_C1","AI","v3","HI","VA","S2","C1",84],["HUM_EN_S2_C3","HUM","hum","EN","","S2","C3",2],["AI_v3_HI_VB_S3_C1","AI","v3","HI","VB","S3","C1",71],["HUM_EN_S2_C2","HUM","hum","EN","","S2","C2",2],["HUM_EN_S1_C0","HUM","hum","EN","","S1","C0",2],["AI_v3_HI_VB_S3_C3","AI","v3","HI","VB","S3","C3",42],["HUM_EN_S2_C0","HUM","hum","EN","","S2","C0",2],["AI_v3_ES_VA_S3_C2","AI","v3","ES","VA","S3","C2",38],["HUM_ES_S1_C0","HUM","hum","ES","","S1","C0",2],["AI_fl_HI_VA_S2_C3","AI","fl","HI","VA","S2","C3",86],["AI_v2_HI_VA_S2_C1","AI","v2","HI","VA","S2","C1",98],["AI_v2_ES_VA_S3_C3","AI","v2","ES","VA","S3","C3",98],["AI_fl_EN_VB_S2_C1","AI","fl","EN","VB","S2","C1",98],["AI_v2_EN_VB_S2_C0","AI","v2","EN","VB","S2","C0",98],["AI_fl_EN_VA_S1_C3","AI","fl","EN","VA","S1","C3",98],["AI_fl_EN_VB_S2_C0","AI","fl","EN","VB","S2","C0",98],["AI_v2_ES_VA_S3_C1","AI","v2","ES","VA","S3","C1",98],["AI_v3_ES_VB_S1_C1","AI","v3","ES","VB","S1","C1",12],["AI_fl_ES_VA_S3_C2","AI","fl","ES","VA","S3","C2",98],["AI_v2_HI_VA_S2_C2","AI","v2","HI","VA","S2","C2",98],["HUM_HI_S3_C2","HUM","hum","HI","","S3","C2",2],["HUM_ES_S3_C2","HUM","hum","ES","","S3","C2",2],["AI_fl_EN_VB_S2_C2","AI","fl","EN","VB","S2","C2",98],["HUM_ES_S3_C3","HUM","hum","ES","","S3","C3",2],["AI_v3_EN_VA_S1_C0","AI","v3","EN","VA","S1","C0",98],["HUM_ES_S1_C1","HUM","hum","ES","","S1","C1",2],["AI_v3_EN_VB_S2_C3","AI","v3","EN","VB","S2","C3",5],["AI_v2_EN_VB_S2_C3","AI","v2","EN","VB","S2","C3",98],["AI_fl_ES_VA_S3_C3","AI","fl","ES","VA","S3","C3",98],["HUM_EN_S1_C2","HUM","hum","EN","","S1","C2",2],["AI_fl_HI_VB_S3_C0","AI","fl","HI","VB","S3","C0",98],["AI_v2_ES_VB_S1_C2","AI","v2","ES","VB","S1","C2",98],["AI_fl_HI_VA_S2_C0","AI","fl","HI","VA","S2","C0",98],["AI_v3_HI_VB_S3_C2","AI","v3","HI","VB","S3","C2",63],["AI_v3_ES_VB_S1_C0","AI","v3","ES","VB","S1","C0",39],["HUM_EN_S1_C3","HUM","hum","EN","","S1","C3",2],["HUM_ES_S1_C2","HUM","hum","ES","","S1","C2",2],["HUM_EN_S2_C1","HUM","hum","EN","","S2","C1",2],["AI_fl_EN_VA_S1_C2","AI","fl","EN","VA","S1","C2",98],["HUM_ES_S3_C1","HUM","hum","ES","","S3","C1",2],["AI_v3_ES_VA_S3_C0","AI","v3","ES","VA","S3","C0",98],["AI_fl_EN_VB_S2_C3","AI","fl","EN","VB","S2","C3",90],["HUM_HI_S3_C0","HUM","hum","HI","","S3","C0",2],["AI_v3_HI_VA_S2_C3","AI","v3","HI","VA","S2","C3",37],["AI_fl_ES_VB_S1_C2","AI","fl","ES","VB","S1","C2",98],["AI_v3_EN_VB_S2_C2","AI","v3","EN","VB","S2","C2",70],["AI_v2_EN_VA_S1_C2","AI","v2","EN","VA","S1","C2",98],["AI_v2_ES_VB_S1_C0","AI","v2","ES","VB","S1","C0",98],["AI_fl_ES_VA_S3_C0","AI","fl","ES","VA","S3","C0",98],["AI_v3_HI_VA_S2_C2","AI","v3","HI","VA","S2","C2",25],["AI_fl_HI_VA_S2_C2","AI","fl","HI","VA","S2","C2",98],["AI_v3_HI_VA_S2_C0","AI","v3","HI","VA","S2","C0",84],["AI_fl_EN_VA_S1_C1","AI","fl","EN","VA","S1","C1",98],["AI_v2_EN_VA_S1_C1","AI","v2","EN","VA","S1","C1",98],["AI_v3_HI_VB_S3_C0","AI","v3","HI","VB","S3","C0",66],["AI_v2_HI_VB_S3_C0","AI","v2","HI","VB","S3","C0",98],["AI_fl_HI_VA_S2_C1","AI","fl","HI","VA","S2","C1",98],["AI_fl_EN_VA_S1_C0","AI","fl","EN","VA","S1","C0",98],["AI_v2_ES_VA_S3_C0","AI","v2","ES","VA","S3","C0",98],["AI_v2_ES_VB_S1_C1","AI","v2","ES","VB","S1","C1",98],["AI_v3_ES_VA_S3_C3","AI","v3","ES","VA","S3","C3",18],["AI_fl_HI_VB_S3_C3","AI","fl","HI","VB","S3","C3",82],["HUM_HI_S2_C2","HUM","hum","HI","","S2","C2",2],["AI_v2_ES_VB_S1_C3","AI","v2","ES","VB","S1","C3",98],["AI_fl_ES_VB_S1_C1","AI","fl","ES","VB","S1","C1",98],["AI_v2_HI_VB_S3_C2","AI","v2","HI","VB","S3","C2",98],["AI_v3_EN_VA_S1_C3","AI","v3","EN","VA","S1","C3",5],["AI_v3_ES_VB_S1_C3","AI","v3","ES","VB","S1","C3",2],["HUM_HI_S2_C3","HUM","hum","HI","","S2","C3",2],["AI_fl_ES_VA_S3_C1","AI","fl","ES","VA","S3","C1",98],["AI_fl_ES_VB_S1_C3","AI","fl","ES","VB","S1","C3",93],["AI_v2_HI_VA_S2_C0","AI","v2","HI","VA","S2","C0",98],["AI_v3_ES_VB_S1_C2","AI","v3","ES","VB","S1","C2",61],["AI_v2_EN_VB_S2_C2","AI","v2","EN","VB","S2","C2",98]];
+const MODELS = [
+  { k: "v2", name: "Multilingual v2", color: "var(--c-v2)" },
+  { k: "fl", name: "Flash v2.5", color: "var(--c-fl)" },
+  { k: "v3", name: "Eleven v3", color: "var(--c-v3)" },
+  { k: "hum", name: "Human control", color: "var(--c-hum)" }
+];
+const CONDS = [["C0", "Clean"], ["C1", "MP3"], ["C2", "Telephone"], ["C3", "Noise"]];
+const LANG = { EN: "English", HI: "Hindi", ES: "Spanish" };
+const rows = DATA.map(r => ({ id: r[0], cls: r[1], m: r[2], lang: r[3], voice: r[4], script: r[5], c: r[6], s: r[7] }));
+
+const slider = document.getElementById("t");
+const out = document.getElementById("tv");
+const strip = document.getElementById("strip");
+const readout = document.getElementById("readout");
+const gridBody = document.querySelector("#grid tbody");
+let T = 50;
+const NS = "http://www.w3.org/2000/svg";
+
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+// deterministic jitter so points do not overlap exactly
+function jitter(id) {
+  let h = 0;
+  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return ((h % 1000) / 1000 - 0.5);
+}
+
+const tip = document.createElement("div");
+tip.className = "tip";
+tip.setAttribute("role", "status");
+strip.appendChild(tip);
+
+function drawStrip() {
+  strip.querySelectorAll("svg").forEach(s => s.remove());
+  const W = strip.clientWidth;
+  const H = 380;
+  const m = { l: 48, r: 8, t: 12, b: 40 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const svg = el("svg", { width: W, height: H });
+  strip.insertBefore(svg, tip);
+  const y = v => m.t + ih * (1 - v / 100);
+  for (const v of [0, 25, 50, 75, 100]) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: "#e8e5e1" }, svg);
+    const t = el("text", { x: m.l - 10, y: y(v) + 5, "text-anchor": "end" }, svg);
+    t.textContent = v + "%";
+  }
+  const colW = iw / 4;
+  CONDS.forEach(([c, label], ci) => {
+    const x0 = m.l + ci * colW;
+    if (ci > 0) el("line", { x1: x0, x2: x0, y1: m.t, y2: m.t + ih, stroke: "#e8e5e1" }, svg);
+    const t = el("text", { x: x0 + colW / 2, y: H - 10, "text-anchor": "middle" }, svg);
+    t.textContent = colW < 100 && c === "C2" ? "Phone" : label;
+    const laneW = colW / 4;
+    MODELS.forEach((mod, mi) => {
+      const cx = x0 + laneW * (mi + 0.5);
+      rows.filter(r => r.c === c && r.m === mod.k).forEach(r => {
+        const px = cx + jitter(r.id) * laneW * 0.55;
+        const below = r.s < T;
+        const hum = mod.k === "hum";
+        const dot = el("circle", {
+          cx: px, cy: y(r.s), r: 6,
+          fill: hum ? "#fff" : mod.color,
+          stroke: hum ? mod.color : "#fff",
+          "stroke-width": hum ? 2 : 1.5,
+          opacity: (!hum && below) || (hum && !below) ? 1 : 0.9
+        }, svg);
+        dot.style.cursor = "pointer";
+        const show = () => {
+          tip.textContent = `${r.id}: ${r.s}%`;
+          tip.style.opacity = 1;
+          const tw = tip.offsetWidth;
+          tip.style.left = Math.min(Math.max(px - tw / 2, 0), W - tw) + "px";
+          tip.style.top = (y(r.s) - 48) + "px";
+        };
+        dot.addEventListener("mouseenter", show);
+        dot.addEventListener("click", show);
+        dot.addEventListener("mouseleave", () => tip.style.opacity = 0);
+      });
+    });
+  });
+  // threshold line
+  el("line", { x1: m.l, x2: W - m.r, y1: y(T), y2: y(T), stroke: "var(--ink)", "stroke-width": 1.5, "stroke-dasharray": "6 5" }, svg);
+}
+
+function drawReadout() {
+  const ai = rows.filter(r => r.cls === "AI");
+  const hum = rows.filter(r => r.cls === "HUM");
+  const count = (set, c, f) => { const a = set.filter(r => r.c === c && f(r)); return [a.filter(r => r.s >= T).length, a.length]; };
+  const lines = [
+    ["AI clips detected", r => true, ai],
+    ["Multilingual v2 and Flash v2.5 detected", r => r.m !== "v3", ai],
+    ["Eleven v3 detected", r => r.m === "v3", ai],
+    ["Human controls flagged", r => true, hum]
+  ];
+  let h = `<thead><tr><th scope="col">At ${T}%</th>` + CONDS.map(([, l]) => `<th scope="col" class="num">${l}</th>`).join("") + `</tr></thead><tbody>`;
+  lines.forEach(([label, f, set]) => {
+    h += `<tr><td>${label}</td>` + CONDS.map(([c]) => { const [k, n] = count(set, c, f); return `<td class="num">${k} of ${n}</td>`; }).join("") + `</tr>`;
+  });
+  readout.innerHTML = h + "</tbody>";
+}
+
+function buildGrid() {
+  gridBody.innerHTML = "";
+  for (const mod of MODELS.slice(0, 3)) {
+    const g = document.createElement("tr");
+    g.className = "group"; g.dataset.m = mod.k;
+    g.innerHTML = `<th scope="rowgroup" colspan="5">${mod.name}</th>`;
+    gridBody.appendChild(g);
+    const ids = [...new Set(rows.filter(r => r.m === mod.k).map(r => r.id.replace(/_C\d$/, "")))].sort();
+    ids.forEach(base => {
+      const [, , lang, voice, script] = base.split("_");
+      const tr = document.createElement("tr");
+      tr.dataset.m = mod.k;
+      tr.innerHTML = `<td class="clip">${LANG[lang]}, voice ${voice.slice(1)}, ${script}</td>` +
+        CONDS.map(([c]) => {
+          const r = rows.find(x => x.id === `${base}_${c}`);
+          return `<td class="s" data-s="${r.s}">${r.s}%</td>`;
+        }).join("");
+      gridBody.appendChild(tr);
+    });
+  }
+}
+
+function paintGrid() {
+  gridBody.querySelectorAll("td.s").forEach(td => {
+    const s = +td.dataset.s;
+    const a = 0.06 + 0.84 * (s / 100);
+    td.style.background = `rgba(0,0,0,${a.toFixed(3)})`;
+    td.style.color = s >= 55 ? "#fff" : "#000";
+    td.classList.toggle("miss", s < T);
+  });
+}
+
+function update() {
+  T = +slider.value;
+  out.textContent = T + "%";
+  drawStrip();
+  drawReadout();
+  paintGrid();
+}
+
+slider.addEventListener("input", update);
+document.getElementById("reset").addEventListener("click", () => { slider.value = 50; update(); });
+document.querySelectorAll(".filters .pill").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".filters .pill").forEach(x => x.setAttribute("aria-pressed", x === b));
+  const k = b.dataset.m;
+  gridBody.querySelectorAll("tr").forEach(tr => tr.classList.toggle("hidden", k !== "all" && tr.dataset.m !== k));
+}));
+let rt;
+window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawStrip, 120); });
+
+buildGrid();
+update();
+</script>
+</body>
+</html>
