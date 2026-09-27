@@ -1,6 +1,6 @@
 # Voice Provenance Robustness Audit
 
-**Status:** Pilot study, complete. Findings were shared with the ElevenLabs safety team as this repository was made public over.
+**Status:** Pilot study, complete. Findings were shared with the ElevenLabs safety team as this repository was made public.
 
 ## Research question
 
