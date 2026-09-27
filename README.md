@@ -50,9 +50,9 @@ The classifier gave identical scores on all 12 retested files, so the results be
 
 **Human controls.** None of the 24 control queries was flagged. Every control scored 2%, the lowest value the tool displays. This held for the non-native Spanish recordings.
 
-!\[Recall by condition and model](results/recall\_by\_condition.png)
+!\[Recall by condition and model](results/recall_by_condition.png)
 
-!\[Raw scores by condition](results/scores\_by\_condition.png)
+!\[Raw scores by condition](results/scores_by_condition.png)
 
 **Hypotheses**
 
@@ -86,7 +86,7 @@ The false-positive result is reassuring for this sample. No human recording was 
 
 ## Deviations from the protocol
 
-Deviations are recorded with dates in `protocol/RUN\_LOG.md`.
+Deviations are recorded with dates in `protocol/RUN_LOG.md`.
 
 ## Repository structure
 
@@ -96,8 +96,8 @@ Deviations are recorded with dates in `protocol/RUN\_LOG.md`.
 |`scripts/`|Generation, audio processing, hashing, query ordering, labelling and analysis|
 |`data/MANIFEST.csv`|SHA-256 hash and settings for every audio file|
 |`data/voices.json`|Voice selection record|
-|`data/generation\_log.csv`|Every generation request|
-|`data/controls\_meta.csv`|Recording details for the human controls|
+|`data/generation_log.csv`|Every generation request|
+|`data/controls_meta.csv`|Recording details for the human controls|
 |`results/`|Classifier scores, summary tables, test results and charts|
 |`evidence/screenshots/`|Captures of the classifier documentation|
 
@@ -115,19 +115,19 @@ conda activate vpra
 pip install -r requirements.txt
 copy .env.example .env
 
-python scripts/00\_check\_setup.py
-python scripts/01\_select\_voices.py
-python scripts/02\_generate.py
+python scripts/00_check_setup.py
+python scripts/01_select_voices.py
+python scripts/02_generate.py
 # record the six human controls into data/controls/
-python scripts/03\_degrade.py
-python scripts/04\_manifest.py
-python scripts/05\_query\_order.py
-python scripts/06\_label.py            # manual upload to the web classifier
-python scripts/06\_label.py --retest
-python scripts/07\_analyse.py
+python scripts/03_degrade.py
+python scripts/04_manifest.py
+python scripts/05_query_order.py
+python scripts/06_label.py            # manual upload to the web classifier
+python scripts/06_label.py --retest
+python scripts/07_analyse.py
 ```
 
-The analysis can be rerun from `results/labels.csv` alone with `python scripts/07\_analyse.py`. Regenerated audio may not match the published hashes, because generation is not guaranteed to be deterministic.
+The analysis can be rerun from `results/labels.csv` alone with `python scripts/07_analyse.py`. Regenerated audio may not match the published hashes, because generation is not guaranteed to be deterministic.
 
 ## License
 
