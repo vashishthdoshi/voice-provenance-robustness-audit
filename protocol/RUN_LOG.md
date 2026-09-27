@@ -12,7 +12,9 @@ Dated record of every action taken in this study, in chronological order. Entrie
 |2026-09-26|Seeds fixed|Noise 20260926, query order 20260927, retest 20260928|e2f9245|
 |2026-09-26|Implementation specified|Voice rule applied as: VA = first premade voice with a male or female label, VB = next premade voice with the other label. C2 resamples before band-pass. C3 SNR uses whole-clip mean power; output 44.1 kHz mono WAV. Retest sample drawn before querying with the fixed seed|e2f9245|
 |2026-09-26|Voices selected|Rule applied to 21 premade voices. VA: Roger (male), CwhRBWXzGAHq8TQ4Fs17. VB: Sarah (female), EXAVITQu4vr4xnSDxMaL. Full ordered list in data/voices.json|e2f9245|
-|2026-09-26|Regenerated "AI\_fl\_HI\_VA\_S2.mp3" and "AI\_v3\_HI\_VB\_S3.mp3". Wrong language corrected for the latter.|"order (English = 'order')" and "oar se (English = 'from')" is mis-pronounced as "oren-der" and "orus-ae" respectively \|  First attempts kept as AI\_fl\_HI\_VA\_S2.attempt1.mp3 and AI\_v3\_HI\_VB\_S3.attempt1.mp3 respectively|(this commit)|
+|2026-09-26|Regenerated "AI\_fl\_HI\_VA\_S2.mp3" and "AI\_v3\_HI\_VB\_S3.mp3". Wrong language corrected for the latter with the second generation.|"order (English = 'order')" and "oar se (English = 'from')" is mis-pronounced as "oren-der" and "orus-ae" respectively \|  First attempts kept as AI\_fl\_HI\_VA\_S2.attempt1.mp3 and AI\_v3\_HI\_VB\_S3.attempt1.mp3 respectively|930d64f|
+|2026-09-26|All controls generated|Best take of 3 used. No copies kept of failed takes for easier management|100644|
+|2026-09-26|Degradation run|96 condition files produced from 24 sources. Seven C3 files scaled down to prevent clipping, SNR unchanged: AI\_fl\_EN\_VB\_S2 (0.9650), AI\_fl\_HI\_VB\_S3 (0.9248), AI\_v3\_EN\_VB\_S2 (0.9084), AI\_v3\_HI\_VB\_S3 (0.9183), AI\_v3\_ES\_VB\_S1 (0.9140), HUM\_ES\_S1 (0.8339). Manifest: 20 raw including 2 kept attempts, 6 controls, 96 degraded|(this commit)|
 
 
 
